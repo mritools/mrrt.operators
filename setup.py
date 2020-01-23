@@ -43,6 +43,7 @@ cmdclass = {"test": PyTest}
 
 opts = dict(
     name=NAME,
+    namespace_package=["mrrt"],
     maintainer=MAINTAINER,
     maintainer_email=MAINTAINER_EMAIL,
     description=DESCRIPTION,
