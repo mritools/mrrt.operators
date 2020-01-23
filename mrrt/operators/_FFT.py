@@ -115,9 +115,9 @@ class FFT_Operator(LinearOperatorMulti):
             # make sure it is boolean
             self.sample_mask = self.sample_mask > 0
             # prestore raveled mask indices to save time later during masking
-            self.sample_mask_idx = xp.where(
-                self.sample_mask.ravel(order=self.order)
-            )
+            # self.sample_mask_idx = xp.where(
+            #     self.sample_mask.ravel(order=self.order)
+            # )
 
         # can specify a subset of the axes to perform the FFT/FFTshifts over
         self.fft_axes = fft_axes
@@ -351,7 +351,7 @@ class FFT_Operator(LinearOperatorMulti):
                 y,
                 mask=self.sample_mask,
                 order=self.order,
-                mask_idx_ravel=self.sample_mask_idx,
+                # mask_idx_ravel=self.sample_mask_idx,
             )
         return y
 
