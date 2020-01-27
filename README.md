@@ -10,12 +10,14 @@ TODO
 Installation
 ------------
 
-TODO
+```
+pip install mrrt.operators
+```
 
 **Requires:**
 
 - [NumPy]  (>=1.14)
-- [SciPy]  (>=1.0)
+- [SciPy]  (>=0.19)
 - [mrrt.utils]
 
 **Recommended:**
@@ -26,6 +28,9 @@ TODO
 
 - [pytest]
 
-Documentation
--------------
-TODO
+
+[CuPy]: https://cupy.chainer.org
+[mrrt.utils]: https://github.com/mritools/mrrt.utils
+[NumPy]: https://numpy.org
+[pytest]: https://docs.pytest.org/en/latest/
+[SciPy]: https://scipy.org
