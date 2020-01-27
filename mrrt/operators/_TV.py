@@ -114,7 +114,7 @@ class TV_Operator(PriorMixin, LinearOperatorMulti):
         nd_output=True,
         squeeze_reps=True,
         axes=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -160,9 +160,6 @@ class TV_Operator(PriorMixin, LinearOperatorMulti):
                 raise ValueError("invalid axis")
             axes = axes % self.ndim
             self.offsets = np.asarray(self.offsets)[axes].tolist()
-            custom_offsets = True
-        else:
-            custom_offsets = False
 
         self.num_offsets = len(self.offsets)
 
@@ -203,35 +200,27 @@ class TV_Operator(PriorMixin, LinearOperatorMulti):
             if True:
                 # non-periodic, slightly faster
                 self.grad_func = functools.partial(
-                    gradient_ravel_offsets,
-                    offsets=self.offsets
+                    gradient_ravel_offsets, offsets=self.offsets
                 )
                 self.div_func = functools.partial(
-                    divergence_ravel_offsets,
-                    offsets=self.offsets
+                    divergence_ravel_offsets, offsets=self.offsets
                 )
             else:
                 # periodic
-                self.grad_func = functools.partial(
-                    gradient_periodic, axes=axes
-                )
+                self.grad_func = functools.partial(gradient_periodic, axes=axes)
                 self.div_func = functools.partial(
                     divergence_periodic, axes=axes
                 )
         else:
-            self.grad_func = functools.partial(
-                gradient_periodic)
-            self.div_func = functools.partial(
-                divergence_periodic)
+            self.grad_func = functools.partial(gradient_periodic)
+            self.div_func = functools.partial(divergence_periodic)
 
         self.mask_in = kwargs.pop("mask_in", None)
         if self.mask_in is not None:
             nargin = self.mask_in.sum()
             if isinstance(nargin, cupy_ndarray_type):
                 nargin = nargin.get()
-            nd_input = (
-                True
-            )  # TODO: fix LinOp to remove need for this.  why does DWT case not need it?
+            nd_input = True  # TODO: fix LinOp to remove need for this.  why does DWT case not need it?
         self.mask_out = kwargs.pop("mask_out", None)
         if self.mask_out is not None:
             # probably wrong if order = 'C'
@@ -265,7 +254,7 @@ class TV_Operator(PriorMixin, LinearOperatorMulti):
             symmetric=False,
             hermetian=False,
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     @property

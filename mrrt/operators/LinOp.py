@@ -52,8 +52,8 @@ def _same_loc(y, y_ref):
 
     """
     if type(y) == type(y_ref):
-        if (hasattr(y_ref, '__cuda_array_interface__')
-            and hasattr(y_ref, 'device')
+        if hasattr(y_ref, "__cuda_array_interface__") and hasattr(
+            y_ref, "device"
         ):
             if y.device != y_ref.device:
                 with cupy.cuda.Device(y_ref.device):
@@ -221,7 +221,7 @@ class LinearOperatorMulti(BaseLinearOperator, GpuCheckerMixin):
         debug=False,
         loc_in="cpu",
         loc_out="cpu",
-        **kwargs
+        **kwargs,
     ):
 
         if isinstance(nargout, cupy_ndarray_type):
@@ -397,7 +397,7 @@ class LinearOperatorMulti(BaseLinearOperator, GpuCheckerMixin):
                     matvec_allows_repetitions=self.matvec_allows_repetitions,
                     loc_in=self.loc_out,
                     loc_out=self.loc_in,
-                    **kwargs
+                    **kwargs,
                 )
         else:
             # Use operator supplied as transpose operator.
@@ -435,7 +435,7 @@ class LinearOperatorMulti(BaseLinearOperator, GpuCheckerMixin):
                     loc_in=self.loc_out,
                     loc_out=self.loc_in,
                     matvec_allows_repetitions=self.matvec_allows_repetitions,
-                    **kwargs
+                    **kwargs,
                 )
         else:
             # Use operator supplied as adjoint operator.
@@ -1130,7 +1130,7 @@ class IdentityOperatorMulti(LinearOperatorMulti):
             symmetric=True,
             hermitian=True,
             matvec=lambda x: x,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -1148,7 +1148,7 @@ class MaskingOperator(LinearOperatorMulti):
         shape=None,
         symmetric=False,
         hermitian=False,
-        **kwargs
+        **kwargs,
     ):
         if "symmetric" in kwargs:
             kwargs.pop("symmetric")
@@ -1208,7 +1208,7 @@ class MaskingOperator(LinearOperatorMulti):
             mask_in=mask_in,
             nd_input=False,
             nd_output=False,
-            **kwargs
+            **kwargs,
         )
 
     def forward(self, x):
@@ -1263,7 +1263,7 @@ class RDiagOperator(LinearOperatorMulti):
             hermitian=True,
             matvec=self.rdiag_matvec,
             dtype=dtype,
-            **kwargs
+            **kwargs,
         )
 
     def rdiag_matvec(self, x):
@@ -1305,7 +1305,7 @@ class IDiagOperator(LinearOperatorMulti):
             hermitian=True,
             matvec=self.idiag_matvec,
             dtype=dtype,
-            **kwargs
+            **kwargs,
         )
 
     def idiag_matvec(self, x):
@@ -1322,8 +1322,9 @@ class DiagonalOperatorMulti(LinearOperatorMulti):
     modified).
     """
 
-    def __init__(self, diag, nd_input=False, nd_output=False, inplace=False,
-                 **kwargs):
+    def __init__(
+        self, diag, nd_input=False, nd_output=False, inplace=False, **kwargs
+    ):
         if "symmetric" in kwargs:
             kwargs.pop("symmetric")
         if "hermitian" in kwargs:
@@ -1395,23 +1396,23 @@ class DiagonalOperatorMulti(LinearOperatorMulti):
                 if xsize != diag.size:
                     raise ValueError("Incompatible size")
                 if self.inplace:
-                    if diag.dtype.kind == 'c':
+                    if diag.dtype.kind == "c":
                         x *= xp.conj(diag)[diag_slice]
                     else:
                         x *= diag[diag_slice]
                 else:
-                    if diag.dtype.kind == 'c':
+                    if diag.dtype.kind == "c":
                         x = x * xp.conj(diag)[diag_slice]
                     else:
                         x = x * diag[diag_slice]
             else:
                 if self.inplace:
-                    if diag.dtype.kind == 'c':
+                    if diag.dtype.kind == "c":
                         x *= xp.conj(diag)
                     else:
                         x *= diag
                 else:
-                    if diag.dtype.kind == 'c':
+                    if diag.dtype.kind == "c":
                         x = x * xp.conj(diag)
                     else:
                         x = x * diag
@@ -1435,7 +1436,7 @@ class DiagonalOperatorMulti(LinearOperatorMulti):
             matvec_transp=matvec_transp,
             dtype=diag.dtype,
             order=order,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -1487,7 +1488,7 @@ class ZeroOperatorMulti(LinearOperatorMulti):
             matvec_transp=matvec_transp,
             matvec_adj=matvec_transp,
             order=order,
-            **kwargs
+            **kwargs,
         )
 
     def __abs__(self):
@@ -1559,7 +1560,7 @@ class ArrayOp(LinearOperatorMulti):
             hermetian=hermitian,
             dtype=A.dtype,
             order=order,
-            **kwargs
+            **kwargs,
         )
 
     def _get_if_needed(self, x):
@@ -1627,7 +1628,7 @@ class BlockDiagLinOp(LinearOperatorMulti):
         order=None,
         enforce_uniform_order=True,
         concurrent=False,
-        **kwargs
+        **kwargs,
     ):
 
         self._blocks = blocks
@@ -1860,9 +1861,13 @@ class BlockDiagLinOp(LinearOperatorMulti):
                             ytmp = ytmp.ravel(B.order)
                         else:
                             if B.order == "C":
-                                ytmp = ytmp.reshape((-1, B.nargout), order=B.order)
+                                ytmp = ytmp.reshape(
+                                    (-1, B.nargout), order=B.order
+                                )
                             else:
-                                ytmp = ytmp.reshape((B.nargout, -1), order=B.order)
+                                ytmp = ytmp.reshape(
+                                    (B.nargout, -1), order=B.order
+                                )
                     if order == "C":
                         if single_rep and B.squeeze_reps:
                             y[0, slices_out[blk]] = ytmp
@@ -2190,7 +2195,7 @@ class BlockColumnLinOp(LinearOperatorMulti):
         enforce_uniform_order=True,
         concurrent=False,
         row_operator=False,
-        **kwargs
+        **kwargs,
     ):
 
         self._blocks = blocks
@@ -2420,9 +2425,13 @@ class BlockColumnLinOp(LinearOperatorMulti):
                             ytmp = ytmp.ravel(B.order)
                         else:
                             if B.order == "C":
-                                ytmp = ytmp.reshape((-1, B.nargout), order=B.order)
+                                ytmp = ytmp.reshape(
+                                    (-1, B.nargout), order=B.order
+                                )
                             else:
-                                ytmp = ytmp.reshape((B.nargout, -1), order=B.order)
+                                ytmp = ytmp.reshape(
+                                    (B.nargout, -1), order=B.order
+                                )
 
                     if order == "C":
                         if ytmp.ndim == 1:
@@ -2519,10 +2528,6 @@ class BlockColumnLinOp(LinearOperatorMulti):
         self.is_row_operator = row_operator
         if row_operator:
             # swap in/out of column operator to create a row operator
-            tmp = self.slices_in
-            # tmp = self.nargins
-            # nargouts = nargins
-            # nargins = tmp
 
             super(BlockColumnLinOp, self).__init__(
                 sum(nargins),
@@ -2530,13 +2535,28 @@ class BlockColumnLinOp(LinearOperatorMulti):
                 symmetric=symmetric,
                 hermitian=hermitian,
                 matvec=lambda x: blk_matvec_adj(
-                    x, self._blocks, self.nargins, nargouts[0], self.slices_in, order
+                    x,
+                    self._blocks,
+                    self.nargins,
+                    nargouts[0],
+                    self.slices_in,
+                    order,
                 ),
                 matvec_transp=lambda x: blk_matvec(
-                    x, self._blocksT, nargouts[0], self.nargins, self.slices_in, order
+                    x,
+                    self._blocksT,
+                    nargouts[0],
+                    self.nargins,
+                    self.slices_in,
+                    order,
                 ),
                 matvec_adj=lambda x: blk_matvec(
-                    x, self._blocksH, nargouts[0], self.nargins, self.slices_in, order
+                    x,
+                    self._blocksH,
+                    nargouts[0],
+                    self.nargins,
+                    self.slices_in,
+                    order,
                 ),
                 dtype=op_dtype,
                 order=order,
@@ -2556,13 +2576,28 @@ class BlockColumnLinOp(LinearOperatorMulti):
                 symmetric=symmetric,
                 hermitian=hermitian,
                 matvec=lambda x: blk_matvec(
-                    x, self._blocks, nargin, self.nargouts, self.slices_out, order
+                    x,
+                    self._blocks,
+                    nargin,
+                    self.nargouts,
+                    self.slices_out,
+                    order,
                 ),
                 matvec_transp=lambda x: blk_matvec_adj(
-                    x, self._blocksT, self.nargouts, nargin, self.slices_out, order
+                    x,
+                    self._blocksT,
+                    self.nargouts,
+                    nargin,
+                    self.slices_out,
+                    order,
                 ),
                 matvec_adj=lambda x: blk_matvec_adj(
-                    x, self._blocksH, self.nargouts, nargin, self.slices_out, order
+                    x,
+                    self._blocksH,
+                    self.nargouts,
+                    nargin,
+                    self.slices_out,
+                    order,
                 ),
                 dtype=op_dtype,
                 order=order,
@@ -2747,7 +2782,7 @@ class BlockRowLinOp(BlockColumnLinOp):
         order=None,
         enforce_uniform_order=True,
         concurrent=False,
-        **kwargs
+        **kwargs,
     ):
 
         # re-use ColumnLinOp
@@ -2757,7 +2792,7 @@ class BlockRowLinOp(BlockColumnLinOp):
             enforce_uniform_order=enforce_uniform_order,
             concurrent=concurrent,
             row_operator=True,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -2811,10 +2846,12 @@ class CompositeLinOp(LinearOperatorMulti):
         nd_input = nd_output = False
         if any([blk.nd_input for blk in blocks]):
             raise ValueError(
-                "CompositeLinOp only supports operators with nd_input=False")
+                "CompositeLinOp only supports operators with nd_input=False"
+            )
         if any([blk.nd_output for blk in blocks]):
             raise ValueError(
-                "CompositeLinOp only supports operators with nd_input=False")
+                "CompositeLinOp only supports operators with nd_input=False"
+            )
 
         orders = [blk.order for blk in blocks]
         if len(np.unique(orders)) > 1:

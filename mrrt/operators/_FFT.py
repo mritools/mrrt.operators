@@ -36,7 +36,7 @@ class FFT_Operator(LinearOperatorMulti):
         disable_warnings=False,
         im_mask=None,
         rel_fov=None,
-        **kwargs
+        **kwargs,
     ):
         """Cartesian MRI Operator  (with partial FFT and coil maps).
 
@@ -134,9 +134,7 @@ class FFT_Operator(LinearOperatorMulti):
         if self.fft_axes is None:
             Ntrans = prod(self.arr_shape)
         else:
-            Ntrans = prod(
-                np.asarray(self.arr_shape)[np.asarray(self.fft_axes)]
-            )
+            Ntrans = prod(np.asarray(self.arr_shape)[np.asarray(self.fft_axes)])
         if self.ortho:
             # sqrt of product of shape along axes where FFT is performed
             self.scale_ortho = sqrt(Ntrans)
@@ -241,7 +239,7 @@ class FFT_Operator(LinearOperatorMulti):
             symmetric=False,  # TODO: set properly
             hermetian=False,  # TODO: set properly
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     def _preplan_fft(self, pyfftw_threads=None, planner_effort="FFTW_MEASURE"):
@@ -402,12 +400,14 @@ class FFT_Operator(LinearOperatorMulti):
                 )
             if self.order == "C":
                 for rep in range(nreps):
-                    y[rep, ...] = self._forward_single_rep(
-                        x[rep, ...]).reshape(y.shape[1:], order=self.order)
+                    y[rep, ...] = self._forward_single_rep(x[rep, ...]).reshape(
+                        y.shape[1:], order=self.order
+                    )
             else:
                 for rep in range(nreps):
-                    y[..., rep] = self._forward_single_rep(
-                        x[..., rep]).reshape(y.shape[:-1], order=self.order)
+                    y[..., rep] = self._forward_single_rep(x[..., rep]).reshape(
+                        y.shape[:-1], order=self.order
+                    )
 
         if self.ortho:
             y /= self.scale_ortho
@@ -451,13 +451,15 @@ class FFT_Operator(LinearOperatorMulti):
                 y = xp.zeros_like(x)
                 for rep in range(nreps):
                     y[rep, ...] = self._norm_single_rep(x[rep, ...]).reshape(
-                        y.shape[1:], order=self.order)
+                        y.shape[1:], order=self.order
+                    )
             else:
                 x = x.reshape(self.shape_in + (nreps,), order=self.order)
                 y = xp.zeros_like(x)
                 for rep in range(nreps):
                     y[..., rep] = self._norm_single_rep(x[..., rep]).reshape(
-                        y.shape[:-1], order=self.order)
+                        y.shape[:-1], order=self.order
+                    )
 
         if y.dtype != self.result_dtype:
             y = y.astype(self.result_dtype)

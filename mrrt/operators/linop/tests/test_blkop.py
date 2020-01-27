@@ -54,9 +54,7 @@ class TestBlockLinearOperator(unittest.TestCase):
         assert_(self.D in M)
         assert_(M[1, 0] is self.D)
 
-        M = bo.BlockLinearOperator(
-            [[self.A, self.B], [self.C]], symmetric=True
-        )
+        M = bo.BlockLinearOperator([[self.A, self.B], [self.C]], symmetric=True)
         assert_(M.shape == (5, 5))
         assert_(self.B.T in M)
         assert_(M[1, 0] is self.B.T)
@@ -101,9 +99,7 @@ class TestBlockLinearOperator(unittest.TestCase):
         assert_(np.allclose(M.T * x, np.dot(matrix_M.T, x)))
         assert_(np.allclose(M.H * x, np.dot(matrix_M.T, x)))
 
-        M = bo.BlockLinearOperator(
-            [[self.A, self.B], [self.C]], symmetric=True
-        )
+        M = bo.BlockLinearOperator([[self.A, self.B], [self.C]], symmetric=True)
         matrix_M = np.array(
             [
                 [1, 0, 1, 2, 3],

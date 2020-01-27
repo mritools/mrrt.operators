@@ -68,9 +68,7 @@ def test_TV_multiple_inputs(xp, order):
     else:
         r = xp.random.randn(nreps, 16, 16)
         tv_shape = r.shape[1:]
-    TVop = TV_Operator(
-        tv_shape, arr_dtype=r.dtype, order=order, **get_loc(xp)
-    )
+    TVop = TV_Operator(tv_shape, arr_dtype=r.dtype, order=order, **get_loc(xp))
     g = TVop * r
     if order == "F":
         assert_equal(g.shape, (16, 16, 2, nreps))
@@ -95,9 +93,7 @@ def test_TV_gradient_complex(xp, order):
 
     T2 = TV_Operator(e.shape, arr_dtype=ec.dtype, order=order, **get_loc(xp))
     grad_complex = T2.gradient(ec)
-    xp.testing.assert_array_almost_equal(
-        grad_complex.real, grad_complex.imag.T
-    )
+    xp.testing.assert_array_almost_equal(grad_complex.real, grad_complex.imag.T)
 
 
 @pytest.mark.parametrize("xp", all_xp)
@@ -128,7 +124,7 @@ def test_TV_masked(xp):
             nd_input=True,
             nd_output=False,
             random_shift=True,
-            **get_loc(xp)
+            **get_loc(xp),
         )
         out = Wm * r_masked
 
@@ -144,4 +140,4 @@ def test_TV_masked(xp):
             assert_(out.size == Wm.ndim * nmask)
             out = embed(out, mask_out, order=order)
 
-        roundtrip = Wm.H * (Wm * r_masked)
+        Wm.H * (Wm * r_masked)

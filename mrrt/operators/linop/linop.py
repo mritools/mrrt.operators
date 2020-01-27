@@ -122,7 +122,7 @@ class LinearOperator(BaseLinearOperator):
         matvec,
         matvec_transp=None,
         matvec_adj=None,
-        **kwargs
+        **kwargs,
     ):
 
         super(LinearOperator, self).__init__(nargin, nargout, **kwargs)
@@ -185,7 +185,7 @@ class LinearOperator(BaseLinearOperator):
                     matvec_transp,
                     matvec_transp=matvec,
                     transpose_of=self,
-                    **kwargs
+                    **kwargs,
                 )
         else:
             # Use operator supplied as transpose operator.
@@ -196,9 +196,7 @@ class LinearOperator(BaseLinearOperator):
                 msg += " Got " + str(transpose_of.__class__)
                 raise ValueError(msg)
 
-    def __set_adjoint(
-        self, matvec, adjoint_of=None, matvec_adj=None, **kwargs
-    ):
+    def __set_adjoint(self, matvec, adjoint_of=None, matvec_adj=None, **kwargs):
 
         self.__H = None
         if self.hermitian:
@@ -214,7 +212,7 @@ class LinearOperator(BaseLinearOperator):
                     matvec_adj,
                     matvec_adj=matvec,
                     adjoint_of=self,
-                    **kwargs
+                    **kwargs,
                 )
         else:
             # Use operator supplied as adjoint operator.
@@ -242,7 +240,7 @@ class LinearOperator(BaseLinearOperator):
 
     def conjugate(self):
         "Return the complex conjugate operator."
-        if not self.dtype in complex_types:
+        if self.dtype not in complex_types:
             return self
 
         # conj(A) * x = conj(A * conj(x))
@@ -342,7 +340,7 @@ class LinearOperator(BaseLinearOperator):
 
     def matvec(self, x):
         """
-        Product. This method is included for compatibility with Scipy only. 
+        Product. This method is included for compatibility with Scipy only.
         """
         return self.__mul__(x)
 
@@ -522,7 +520,7 @@ class IdentityOperator(LinearOperator):
             symmetric=True,
             hermitian=True,
             matvec=lambda x: x,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -558,7 +556,7 @@ class DiagonalOperator(LinearOperator):
             matvec=lambda x: diag * x,
             matvec_adj=lambda x: diag.conjugate() * x,
             dtype=diag.dtype,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -609,7 +607,7 @@ class ZeroOperator(LinearOperator):
             matvec=matvec,
             matvec_transp=matvec_transp,
             matvec_adj=matvec_transp,
-            **kwargs
+            **kwargs,
         )
 
     def __abs__(self):
@@ -710,9 +708,7 @@ class ShapeError(Exception):
         return repr(self.value)
 
 
-def CoordLinearOperator(
-    vals, rows, cols, nargin=0, nargout=0, symmetric=False
-):
+def CoordLinearOperator(vals, rows, cols, nargin=0, nargout=0, symmetric=False):
     """
     Return a linear operator from a sparse matrix in coordinate format.
     If `nargin` or `nargout` is not specified, it will be inferred from
@@ -774,7 +770,7 @@ def PysparseLinearOperator(A):
     nargout, nargin = A.shape
     try:
         symmetric = A.issym
-    except:
+    except AttributeError:
         symmetric = A.isSymmetric()
 
     def matvec(x):

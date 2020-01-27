@@ -18,6 +18,7 @@ SETUP_REQUIRES = ["setuptools >= 24.2.0"]
 # This enables setuptools to install wheel on-the-fly
 SETUP_REQUIRES += ["wheel"] if "bdist_wheel" in sys.argv else []
 
+
 class PyTest(TestCommand):
     user_options = [("pytest-args=", "a", "Arguments to pass to py.test")]
 

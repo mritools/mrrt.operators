@@ -13,6 +13,7 @@ from mrrt.utils import get_array_module
 
 try:
     import dask
+
     have_dask = True
 except ImportError:
     have_dask = False
@@ -137,12 +138,11 @@ def cycle_spin(
     """
     xp, on_gpu = get_array_module(x, xp)
     x = xp.asanyarray(x)
-    all_shifts = _generate_shifts(
-        x.ndim, multichannel, max_shifts, shift_steps
-    )
+    all_shifts = _generate_shifts(x.ndim, multichannel, max_shifts, shift_steps)
     all_shifts = list(all_shifts)
 
     roll_axes = tuple(range(x.ndim))
+
     def _run_one_shift(shift):
         # shift, apply function, inverse shift
         xs = xp.roll(x, shift, axis=roll_axes)

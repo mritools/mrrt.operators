@@ -221,27 +221,39 @@ class TestLinearOperator(unittest.TestCase):
         assert_(isinstance(C ** 2, lo.LinearOperator))
         assert_(isinstance(C ** 0, lo.IdentityOperator))
 
-        sum_A = lambda x: A + x
+        def sum_A(x):
+            return A + x
+
         assert_raises(ValueError, sum_A, 3)
         assert_raises(ValueError, sum_A, v)
         assert_raises(ShapeError, sum_A, B)
 
-        sub_A = lambda x: A - x
+        def sub_A(x):
+            return A - x
+
         assert_raises(ValueError, sub_A, 3)
         assert_raises(ValueError, sub_A, v)
         assert_raises(ShapeError, sub_A, B)
 
-        mul_A = lambda x: A * x
+        def mul_A(x):
+            return A * x
+
         assert_raises(ValueError, mul_A, u)
         assert_raises(ShapeError, mul_A, A)
 
-        div_A = lambda x: A / x
+        def div_A(x):
+            return A / x
+
         assert_raises(ValueError, div_A, B)
         assert_raises(ValueError, div_A, u)
         assert_raises(ZeroDivisionError, div_A, 0)
 
-        pow_A = lambda x: A ** x
-        pow_C = lambda x: C ** x
+        def pow_A(x):
+            return A ** x
+
+        def pow_C(x):
+            return C ** x
+
         assert_raises(ShapeError, pow_A, 2)
         assert_raises(ValueError, pow_C, -2)
         assert_raises(ValueError, pow_C, 2.1)
@@ -385,9 +397,9 @@ class test_linop_from_ndarray(unittest.TestCase):
         assert_equal(A_as_op.T * x, self.A.T.dot(x))
         assert_equal(A_as_op.H * x, self.A.T.dot(x))
 
-        init_Aop = lambda s, h: lo.linop_from_ndarray(
-            self.A, symmetric=s, hermitian=h
-        )
+        def init_Aop(s, h):
+            lo.linop_from_ndarray(self.A, symmetric=s, hermitian=h)
+
         assert_raises(ValueError, init_Aop, True, False)
 
 

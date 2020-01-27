@@ -61,7 +61,7 @@ def test_block_diag_identical(xp, order):
         level=3,
         filterbank=filters.pywt_as_filterbank("db2", xp=xp),
         mode="periodization",
-        **get_loc(xp)
+        **get_loc(xp),
     )
     nblocks = 3
     Phi_block_op = BlockDiagLinOp([Phi] * nblocks)
@@ -71,7 +71,7 @@ def test_block_diag_identical(xp, order):
     assert_(Phi_block_op.blocks[0] is Phi_block_op.blocks[1])
 
     # test round trip
-    x = xp.concatenate((c.ravel(order=order), ) * nblocks, axis=0)
+    x = xp.concatenate((c.ravel(order=order),) * nblocks, axis=0)
     y = Phi_block_op * x
     x2 = Phi_block_op.H * y
     xp.testing.assert_allclose(x, x2, rtol=1e-9, atol=1e-9)
@@ -142,7 +142,7 @@ def test_block_diag(xp, nd_in, nd_out, order1, order2):
         level=3,
         filterbank=filters.pywt_as_filterbank("db2", xp=xp),
         mode="periodization",
-        **get_loc(xp)
+        **get_loc(xp),
     )
     TV = TV_Operator(
         c.shape, order=order2, nd_input=nd_in, nd_output=nd_out, **get_loc(xp)

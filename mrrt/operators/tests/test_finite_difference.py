@@ -54,13 +54,14 @@ def test_FiniteDifference_operator(xp, order):
 
     # 2D without corners should match the TV Operator in 'iso' mode
     TV = TV_Operator(
-        e.shape, arr_dtype=ec.dtype, tv_type="iso", order=order, **get_loc(xp))
+        e.shape, arr_dtype=ec.dtype, tv_type="iso", order=order, **get_loc(xp)
+    )
     FD_nocorner = FiniteDifferenceOperator(
         e.shape,
         arr_dtype=ec.dtype,
         order=order,
         use_corners=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     xp.testing.assert_array_almost_equal(TV * ec, FD_nocorner * ec)
 
@@ -70,7 +71,7 @@ def test_FiniteDifference_operator(xp, order):
         arr_dtype=ec.dtype,
         order=order,
         use_corners=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     y = FD * e
     if order == "F":
@@ -201,14 +202,12 @@ def test_operator_combinations(xp):
     xp.testing.assert_array_almost_equal(xp.zeros_like(d0), (FD0 - FD0) * e)
 
     I = IdentityOperator(e.size, **linop_shape_args(FD0), **get_loc(xp))
-    xp.testing.assert_array_almost_equal(
-        d0 + e[..., np.newaxis], (FD0 + I) * e
-    )
+    xp.testing.assert_array_almost_equal(d0 + e[..., np.newaxis], (FD0 + I) * e)
 
     D = DiagonalOperator(
         xp.arange(e.size, dtype=np.float32),
         **linop_shape_args(FD0),
-        **get_loc(xp)
+        **get_loc(xp),
     )
     xp.testing.assert_array_almost_equal(D * d0, (D * FD0) * e)
 
@@ -235,7 +234,7 @@ def test_FiniteDifference_axes_subsets(xp, fd_axes):
             e.shape,
             axes=(0,),
             use_corners=True,
-            **get_loc(xp)
+            **get_loc(xp),
         )
 
     # verify result for forward operation
@@ -273,7 +272,7 @@ def test_custom_offsets(xp, ndim):
         axes=None,  # tuple(np.arange(ndim)),
         use_corners=False,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     # equivalent operation specified via custom_offsets instead
@@ -283,7 +282,7 @@ def test_custom_offsets(xp, ndim):
         custom_offsets=custom_offsets,
         use_corners=False,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     d1 = FD1 * e
@@ -315,7 +314,7 @@ def test_grid_weights(xp):
         use_corners=False,
         grid_size=None,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     grid_size = (0.5, 2)  # different scaling along each axis
@@ -325,7 +324,7 @@ def test_grid_weights(xp):
         use_corners=False,
         grid_size=grid_size,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     d1 = FD1 * e
     d2 = FD2 * e
@@ -344,7 +343,7 @@ def test_grid_weights(xp):
         use_corners=False,
         grid_size=grid_size,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     d1 = FD1 * e
     d2 = FD2 * e
@@ -366,7 +365,7 @@ def test_grid_weights(xp):
         use_corners=False,
         grid_size=grid_size,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     d2 = FD2 * e
     xp.testing.assert_array_almost_equal(d1[..., 0], d2[..., 0] * grid_size[0])
@@ -387,7 +386,7 @@ def test_grid_weights(xp):
         use_corners=False,
         grid_size=grid_size,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     d2 = FD2 * e
     xp.testing.assert_array_almost_equal(d1[..., 0], d2[..., 0] * grid_size[0])
@@ -405,7 +404,7 @@ def test_grid_weights(xp):
         use_corners=False,
         grid_size=grid_size,
         nd_output=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     d2 = FD2 * e
     xp.testing.assert_array_almost_equal(d1[..., 0], d2[..., 0] * grid_size[0])
@@ -443,7 +442,7 @@ def test_FiniteDifference_masked(xp, shape):
             nd_input=True,
             nd_output=mask_out is not None,
             random_shift=True,
-            **get_loc(xp)
+            **get_loc(xp),
         )
         out = Wm * r_masked
 
@@ -456,12 +455,10 @@ def test_FiniteDifference_masked(xp, shape):
             assert_(out.size == Wm.num_offsets * mask_out.sum())
             out = embed(out, mask_out, order=order)
 
-        roundtrip = Wm.H * (Wm * r_masked)
+        Wm.H * (Wm * r_masked)
 
 
-@pytest.mark.parametrize(
-    "xp, dtype", product(all_xp, [np.float32, np.float64])
-)
+@pytest.mark.parametrize("xp, dtype", product(all_xp, [np.float32, np.float64]))
 def test_gradient_periodic_forw_back(xp, dtype):
     x = xp.arange(5).astype(dtype)
     g_forw_expected = xp.asarray([1, 1, 1, 1, -4])
@@ -489,9 +486,7 @@ def test_gradient_periodic_nd(xp, axis, ndim):
     assert_equal(g.ndim, r.ndim + 1)
     assert_equal(g.shape[axis], r.ndim)
 
-    d = divergence_periodic(
-        g, deltas=None, direction="forward", grad_axis=axis
-    )
+    d = divergence_periodic(g, deltas=None, direction="forward", grad_axis=axis)
     assert_equal(d.ndim, r.ndim)
 
 

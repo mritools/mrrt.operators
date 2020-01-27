@@ -56,10 +56,7 @@ def test_identity_linop(xp, order, squeeze_reps):
     xp.testing.assert_array_equal(I.H * a, I.rmatvec(a))
 
     I2 = IdentityOperator(
-        nargin=a.size,
-        order=order,
-        squeeze_reps=squeeze_reps,
-        **get_loc(xp)
+        nargin=a.size, order=order, squeeze_reps=squeeze_reps, **get_loc(xp)
     )
     c = I2 * a
     if squeeze_reps:
@@ -67,7 +64,7 @@ def test_identity_linop(xp, order, squeeze_reps):
         xp.testing.assert_array_equal(a, c)
     else:
         assert_(c.ndim == 2)
-        if order == 'F':
+        if order == "F":
             assert_(c.shape[-1] == 1)
             xp.testing.assert_array_equal(a, c[:, 0])
         else:
@@ -213,7 +210,7 @@ def test_linop_with_mask(xp, order):
         nargout=a.size,
         squeeze_reps=True,
         order=order,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     az = Z * a[mask]
     assert_(xp.all(az == 0))
@@ -232,7 +229,7 @@ def test_masking_operator(xp, order):
         nargin=a.size,
         squeeze_reps=True,
         order=order,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     c = I * a
     xp.testing.assert_array_equal(masker(a, mask, order=order), c)
@@ -246,7 +243,7 @@ def test_masking_operator(xp, order):
         nargout=a.size,
         squeeze_reps=True,
         order=order,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     a_masked = masker(a, mask, order=order)
     c = I * a_masked
@@ -257,10 +254,7 @@ def test_masking_operator(xp, order):
 
     # mask neither
     I = MaskingOperator(
-        nargin=a.size,
-        squeeze_reps=True,
-        order=order,
-        **get_loc(xp)
+        nargin=a.size, squeeze_reps=True, order=order, **get_loc(xp)
     )
     c = I * a
     xp.testing.assert_array_equal(a, c)
@@ -277,7 +271,7 @@ def test_masking_operator(xp, order):
         mask_out=mask_out,
         squeeze_reps=True,
         order=order,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     a_masked = masker(a, mask, order=order)
     c = I * a_masked

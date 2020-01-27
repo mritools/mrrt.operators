@@ -45,7 +45,7 @@ def test_DWT(xp, order, nd_in, nd_out):
         level=dec_level,
         filterbank=filterbank,
         mode=dwt_mode,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     if nd_out:
         assert_raises(ValueError, MDWT_Operator, **kwargs)
@@ -87,9 +87,7 @@ def test_DWT_2reps(xp, order, nd_in, decimation):
     rstate = xp.random.RandomState(5)
     c = rstate.randn(128, 128)
     dec_level = 3
-    filterbank = filters.pywt_as_filterbank(
-        "db2", xp=xp, decimation=decimation
-    )
+    filterbank = filters.pywt_as_filterbank("db2", xp=xp, decimation=decimation)
     dwt_mode = "periodization"
     rtol = atol = 1e-7
     Phi = MDWT_Operator(
@@ -100,7 +98,7 @@ def test_DWT_2reps(xp, order, nd_in, decimation):
         level=dec_level,
         filterbank=filterbank,
         mode=dwt_mode,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     """
@@ -173,7 +171,7 @@ def test_DWT_axes_subset(xp, order, nd_in, nd_out):
         level=dec_level,
         filterbank=filterbank,
         mode=dwt_mode,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     tmp = Phi * c3
@@ -198,9 +196,7 @@ def test_DWT_prior(xp, order, decimation):
     rstate = xp.random.RandomState(5)
     c = rstate.randn(128, 128)
     dec_level = 3
-    filterbank = filters.pywt_as_filterbank(
-        "db2", xp=xp, decimation=decimation
-    )
+    filterbank = filters.pywt_as_filterbank("db2", xp=xp, decimation=decimation)
     dwt_mode = "periodization"
     Phi = MDWT_Operator(
         c.shape,
@@ -209,7 +205,7 @@ def test_DWT_prior(xp, order, decimation):
         filterbank=filterbank,
         mode=dwt_mode,
         prior=c,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     coeffs = Phi * c
     # when prior is the same as the image, DWT coeffs should all be zero
@@ -253,7 +249,7 @@ def test_DWT_masked(xp, order, decimation):
         nd_input=False,
         nd_output=False,
         random_shift=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     coeffs = Wm * c_masked
     assert_(coeffs.ndim == 1)
@@ -286,7 +282,7 @@ def test_DWT_masked(xp, order, decimation):
         nd_input=False,
         nd_output=False,
         random_shift=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     coeffs = Wm2 * c_masked
     assert_(coeffs.ndim == 1)
@@ -307,9 +303,7 @@ def test_DWT_autopad(xp, order, decimation):
     rstate = xp.random.RandomState(5)
     c = rstate.randn(128, 128)
     dec_level = 3
-    filterbank = filters.pywt_as_filterbank(
-        "db2", xp=xp, decimation=decimation
-    )
+    filterbank = filters.pywt_as_filterbank("db2", xp=xp, decimation=decimation)
     dwt_mode = "periodization"
     rtol = atol = 1e-7
 
@@ -323,7 +317,7 @@ def test_DWT_autopad(xp, order, decimation):
         filterbank=filterbank,
         mode=dwt_mode,
         autopad=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     assert_equal(Phi.pad_width, [(0, 0), (0, 0)])
     c_recon = xp.reshape(Phi.H * Phi * c, c.shape, order=order)
@@ -343,7 +337,7 @@ def test_DWT_autopad(xp, order, decimation):
         filterbank=filterbank,
         mode=dwt_mode,
         autopad=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     assert_equal(c_trunc.shape, Phi.arr_shape)

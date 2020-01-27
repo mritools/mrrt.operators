@@ -78,10 +78,7 @@ MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
 PACKAGE_DATA = {
-    "mrrt.operators": [
-        pjoin("tests", "*"),
-        pjoin("linop", "tests", "*"),
-    ]
+    "mrrt.operators": [pjoin("tests", "*"), pjoin("linop", "tests", "*")]
 }
 REQUIRES = ["numpy", "mrrt.utils"]
 PYTHON_REQUIRES = ">= 3.6"

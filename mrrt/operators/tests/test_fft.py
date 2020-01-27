@@ -4,7 +4,7 @@ from itertools import product
 import numpy as np
 import pytest
 
-from mrrt.operators import FFT_Operator
+from mrrt.operators import FFT_Operator, LinearOperatorMulti
 from mrrt.utils import config, masker, embed
 from mrrt.utils import fftn, fftnc, ifftn, ifftnc
 
@@ -75,7 +75,7 @@ def test_fft_basic(xp, shift, nd_in, nd_out, order, real_dtype):
         nd_output=nd_out,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     """
@@ -140,7 +140,7 @@ def test_fft_roundtrips(xp, nd_in, nd_out, order):
         nd_output=nd_out,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     """
@@ -201,7 +201,7 @@ def test_fft_axes_subsets_and_ortho(
         ortho=ortho,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     """
@@ -246,7 +246,7 @@ def test_fft_axes_subsets_and_ortho(
             xp.fft.ifftn(
                 xp.fft.ifftshift(numpy_tmp, axes=fft_axes),
                 axes=fft_axes,
-                **fftargs
+                **fftargs,
             ),
             axes=fft_axes,
         )
@@ -270,7 +270,7 @@ def test_fft_2reps(xp, nd_in, nd_out, order, shift):
         nd_output=nd_out,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     """
@@ -330,7 +330,7 @@ def test_fft_composite(xp, nd_in, nd_out, order, shift):
         nd_output=nd_out,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     # create new linear operator for forward followed by inverse transform
@@ -361,8 +361,6 @@ def test_partial_FFT_allsamples(xp, nd_in, order, shift):
 
     nd_out = False
     c = get_data(xp)
-    rstate = xp.random.RandomState(1234)
-    sample_mask = rstate.rand(*(128, 127)) > 0.5
     FTop = FFT_Operator(
         c.shape,
         order=order,
@@ -372,7 +370,7 @@ def test_partial_FFT_allsamples(xp, nd_in, order, shift):
         sample_mask=xp.ones(c.shape),
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )  # no missing samples
 
     # create new linear operator for forward followed by inverse transform
@@ -394,7 +392,7 @@ def test_partial_FFT_allsamples(xp, nd_in, order, shift):
 
 @pytest.mark.parametrize(
     "xp, nd_in, order, shift",
-    product(all_xp, [True, False], ["C", "F"], [True, False])
+    product(all_xp, [True, False], ["C", "F"], [True, False]),
 )
 def test_partial_FFT(xp, nd_in, order, shift):
     """ masked FFT with missing samples """
@@ -412,7 +410,7 @@ def test_partial_FFT(xp, nd_in, order, shift):
         sample_mask=sample_mask,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     # create new linear operator for forward followed by inverse transform
@@ -463,11 +461,12 @@ def test_partial_FFT_with_im_mask(xp, nd_in, order, shift):
         sample_mask=sample_mask,
         gpu_force_reinit=False,
         mask_kspace_on_gpu=(not shift),
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     # create new linear operator for forward followed by inverse transform
     FtF = FTop.H * FTop
+    assert isinstance(FtF, LinearOperatorMulti)
 
     # test forward only
     forw = embed(

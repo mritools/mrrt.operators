@@ -111,9 +111,7 @@ def test_DCT_all_axes():
 
         tmp = tmp.reshape(c.shape, order=order)
         if shift:
-            scipy_tmp = fft.fftshift(
-                dct(dct(fft.ifftshift(c), axis=0), axis=1)
-            )
+            scipy_tmp = fft.fftshift(dct(dct(fft.ifftshift(c), axis=0), axis=1))
         else:
             scipy_tmp = dct(dct(c, axis=0), axis=1)
 

@@ -12,11 +12,9 @@ try:
         _modes_per_axis,
     )
     from pyframelets._utils import _prep_axes_nd, is_nonstring_sequence
-except:
-    warnings.warn(
-        "Could not import PyFramelets:\n"
-        "    MDWT_Operator will not be available."
-    )
+except ImportError:
+    # don't raise error if PyFramelets is not available
+    pass
 
 from mrrt.operators import LinearOperatorMulti
 from mrrt.operators.mixins import PriorMixin
@@ -96,11 +94,15 @@ class Framelet_Operator(abc.ABC, PriorMixin, LinearOperatorMulti):
         if nrepetitions > 1:
 
             if self.order == "C":
-                y = xp.zeros((nrepetitions,) + self.coeff_arr_shape, dtype=x.dtype)
+                y = xp.zeros(
+                    (nrepetitions,) + self.coeff_arr_shape, dtype=x.dtype
+                )
                 for rep in range(nrepetitions):
                     y[rep, ...] = self._forward1(x[rep, ...])
             else:
-                y = xp.zeros(self.coeff_arr_shape + (nrepetitions,), dtype=x.dtype)
+                y = xp.zeros(
+                    self.coeff_arr_shape + (nrepetitions,), dtype=x.dtype
+                )
                 for rep in range(nrepetitions):
                     y[..., rep] = self._forward1(x[..., rep])
         else:
@@ -119,11 +121,15 @@ class Framelet_Operator(abc.ABC, PriorMixin, LinearOperatorMulti):
             coeffs = coeffs.ravel(order=self.order)
         if nrepetitions > 1:
             if self.order == "C":
-                x = xp.zeros((nrepetitions,) + self.arr_shape, dtype=coeffs.dtype)
+                x = xp.zeros(
+                    (nrepetitions,) + self.arr_shape, dtype=coeffs.dtype
+                )
                 for rep in range(nrepetitions):
                     x[rep, ...] = self._adjoint1(coeffs[rep, ...])
             else:
-                x = xp.zeros(self.arr_shape + (nrepetitions,), dtype=coeffs.dtype)
+                x = xp.zeros(
+                    self.arr_shape + (nrepetitions,), dtype=coeffs.dtype
+                )
                 for rep in range(nrepetitions):
                     x[..., rep] = self._adjoint1(coeffs[..., rep])
         else:
@@ -153,7 +159,7 @@ class MDWT_Operator(Framelet_Operator):
         autopad=False,
         autopad_mode="symmetric",
         axes=None,
-        **kwargs
+        **kwargs,
     ):
         """ TODO: fix docstring
 
@@ -322,7 +328,7 @@ class MDWT_Operator(Framelet_Operator):
             symmetric=False,  # TODO: set properly
             hermetian=False,  # TODO: set properly
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     #    def thresh(self, x, mu):
@@ -436,7 +442,7 @@ class FSDWT_Operator(Framelet_Operator):
         autopad=False,
         autopad_mode="symmetric",
         axes=None,
-        **kwargs
+        **kwargs,
     ):
         """ TODO: fix docstring
 
@@ -608,7 +614,7 @@ class FSDWT_Operator(Framelet_Operator):
             symmetric=False,  # TODO: set properly
             hermetian=False,  # TODO: set properly
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     #    def thresh(self, x, mu):

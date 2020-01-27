@@ -16,6 +16,7 @@ TODO:
         http://statweb.stanford.edu/~candes/SURE/index.html
 """
 
+
 class OrthoMatrixOperator(LinearOperatorMulti):
     """ n-dimensional Discrete Cosine Transform operator with optional sampling
     mask.
@@ -29,7 +30,7 @@ class OrthoMatrixOperator(LinearOperatorMulti):
         order="F",
         arr_dtype=np.float32,
         debug=False,
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -76,7 +77,7 @@ class OrthoMatrixOperator(LinearOperatorMulti):
         else:
             xp = np
 
-        if m is "dct":
+        if m == "dct":
             # default is a DCT transform
             m = dct_matrix(self.arr_shape[self.axis], xp=xp)
         else:
@@ -133,7 +134,7 @@ class OrthoMatrixOperator(LinearOperatorMulti):
             symmetric=False,  # TODO: set properly
             hermetian=False,  # TODO: set properly
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     # @profile
@@ -155,9 +156,7 @@ class OrthoMatrixOperator(LinearOperatorMulti):
             else:
                 shape_tmp = self.shape_in + (nreps,)
             y = y.reshape(shape_tmp, order=self.order)
-            x = xp.zeros(
-                shape_tmp, dtype=xp.result_type(y, np.float32)
-            )
+            x = xp.zeros(shape_tmp, dtype=xp.result_type(y, np.float32))
             if self.order == "C":
                 for rep in range(nreps):
                     x[rep, ...] = self._adjoint_single_rep(y[rep, ...])
@@ -170,9 +169,7 @@ class OrthoMatrixOperator(LinearOperatorMulti):
 
     # @profile
     def _forward_single_rep(self, x):
-        return transform_channels(
-            x, self.m, channel_axis=self.axis, xp=self.xp
-        )
+        return transform_channels(x, self.m, channel_axis=self.axis, xp=self.xp)
 
     def forward(self, x):
         xp = self.xp

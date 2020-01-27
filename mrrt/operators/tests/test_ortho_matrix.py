@@ -1,4 +1,3 @@
-import itertools
 from itertools import product
 
 import numpy as np
@@ -45,7 +44,7 @@ def test_OrthoMatrixOperator(xp, nd_in, nd_out, order, axis):
         m=dct_matrix(c.shape[axis], xp=xp),
         nd_input=nd_in,
         nd_output=nd_out,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     """
@@ -85,7 +84,7 @@ def test_OrthoMatrixOperator_2reps(xp, nd_in, nd_out, order):
         m=dct_matrix(c.shape[-1]),  # np.ndarray
         nd_input=nd_in,
         nd_output=nd_out,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     """
     test forward transform with 2 repetitions
@@ -139,7 +138,7 @@ def test_composite_ortho(xp, order):
         m="dct",
         nd_input=False,
         nd_output=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     DWTop = MDWT_Operator(
         arr_shape=c.shape,
@@ -150,7 +149,7 @@ def test_composite_ortho(xp, order):
         level=2,
         filterbank="sym4",
         mode="periodization",
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     Op = CompositeLinOp([DWTop, DCTop])

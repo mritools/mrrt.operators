@@ -204,7 +204,7 @@ class FiniteDifferenceOperator(PriorMixin, LinearOperatorMulti):
         use_corners=False,
         custom_offsets=None,
         axes=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -302,9 +302,7 @@ class FiniteDifferenceOperator(PriorMixin, LinearOperatorMulti):
         self.mask_in = kwargs.pop("mask_in", None)
         if self.mask_in is not None:
             nargin = self.mask_in.sum()
-            nd_input = (
-                True
-            )  # TODO: fix LinOp to remove need for this.  why does DWT case not need it?
+            nd_input = True  # TODO: fix LinOp to remove need for this.  why does DWT case not need it?
         self.mask_out = kwargs.pop("mask_out", None)
         if self.mask_out is not None:
             # TODO: probably wrong if order = 'C'
@@ -327,9 +325,7 @@ class FiniteDifferenceOperator(PriorMixin, LinearOperatorMulti):
             grad_axis = -1
         self.grad_axis = grad_axis
 
-        if custom_offsets is None and (
-            not use_corners
-        ):  #  and self.axes is None:
+        if custom_offsets is None and (not use_corners):
             # standard grad/div along all axes
             # This verion uses periodic boundary conditions
             self.grad_func = functools.partial(
@@ -365,7 +361,7 @@ class FiniteDifferenceOperator(PriorMixin, LinearOperatorMulti):
             symmetric=False,
             hermetian=False,
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     def forward(self, x):
@@ -414,7 +410,10 @@ class FiniteDifferenceOperator(PriorMixin, LinearOperatorMulti):
         if nreps == 1:
             g = g.reshape(self.grad_shape, order=self.order)
             d = self.div_func(
-                g, deltas=self.grid_size, direction="forward", grad_axis=self.grad_axis
+                g,
+                deltas=self.grid_size,
+                direction="forward",
+                grad_axis=self.grad_axis,
             )
         else:
             if self.order == "C":
@@ -623,9 +622,7 @@ def gradient_ravel_offsets(
         axes = np.asanyarray(axes)
         if axes.max() > (ndim - 1):
             raise ValueError(
-                "maximum axis = {}, but f.ndim only {}".format(
-                    axes.max(), ndim
-                )
+                "maximum axis = {}, but f.ndim only {}".format(axes.max(), ndim)
             )
 
     otype = f.dtype.char

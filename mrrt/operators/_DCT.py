@@ -22,7 +22,7 @@ class DCT_Operator(LinearOperatorMulti):
         debug=False,
         dct_axes=None,
         fftshift_axes=None,
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -85,9 +85,7 @@ class DCT_Operator(LinearOperatorMulti):
                 self.scale_ortho = sqrt(nargin)
             else:
                 self.scale_ortho = sqrt(
-                    prod(
-                        np.asarray(self.arr_shape)[np.asarray(self.fft_axes)]
-                    )
+                    prod(np.asarray(self.arr_shape)[np.asarray(self.fft_axes)])
                 )
         else:
             self.scale_ortho = None
@@ -133,7 +131,7 @@ class DCT_Operator(LinearOperatorMulti):
             symmetric=False,  # TODO: set properly
             hermetian=False,  # TODO: set properly
             dtype=self.result_dtype,
-            **kwargs
+            **kwargs,
         )
 
     # @profile
@@ -158,9 +156,7 @@ class DCT_Operator(LinearOperatorMulti):
             else:
                 shape_tmp = self.shape_in + (nreps,)
             y = y.reshape(shape_tmp, order=self.order)
-            x = np.zeros(
-                shape_tmp, dtype=np.result_type(y, np.complex64)
-            )
+            x = np.zeros(shape_tmp, dtype=np.result_type(y, np.complex64))
             if self.order == "C":
                 for rep in range(nreps):
                     x[rep, ...] = self._adjoint_single_rep(y[rep, ...])

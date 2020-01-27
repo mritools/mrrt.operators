@@ -39,14 +39,14 @@ def test_composite_roundtrip(xp, order):
         nd_input=False,
         nd_output=False,
         squeeze_reps=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     # Create an intentional mismatch on squeeze_reps_in
     D = DiagonalOperator(
         np.full(x.size, 2, dtype=x.dtype),
         order=order,
         squeeze_reps=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     C = CompositeLinOp([Phi.H, D, Phi])
     assert_(len(C.blocks) == 3)
@@ -76,7 +76,7 @@ def test_composite_different_shapes(xp, order):
         nd_input=False,
         nd_output=False,
         squeeze_reps=True,
-        **get_loc(xp)
+        **get_loc(xp),
     )
 
     # Create an intentional mismatch on squeeze_reps_in
@@ -84,7 +84,7 @@ def test_composite_different_shapes(xp, order):
         np.full(x.size, 2, dtype=x.dtype),
         order=order,
         squeeze_reps=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     C = CompositeLinOp([TV.H, D, TV])
 
@@ -114,7 +114,7 @@ def test_composite_roundtrip2(xp, order):
         order=order,
         matvec_allows_repetitions=True,
         squeeze_reps=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     # TV Op returns an output that is double the size of the input
     # so make a Block Diagonal LinOp for D
@@ -178,7 +178,7 @@ def test_block_composite_op(xp, order):
         order=order,
         matvec_allows_repetitions=True,
         squeeze_reps=False,
-        **get_loc(xp)
+        **get_loc(xp),
     )
     C = CompositeLinOp([Phi.H, D, Phi])
     B = BlockDiagLinOp([C] * 8)
